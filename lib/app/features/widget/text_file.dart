@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:password_gen/app/features/presentation/pages/home/bloc/home_bloc.dart';
 
 class CustomTextField extends StatefulWidget {
+  final GlobalKey keyg;
   const CustomTextField({
     super.key,
+    required this.keyg,
   });
 
   @override
@@ -33,21 +35,31 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 500),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: InputBorder.none,
+            child: Form(
+              key: widget.keyg,
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+                controller: state.passwordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Tap refresh button";
+                  } else {
+                    return null;
+                  }
+                },
+                readOnly: true,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+                onTap: () {
+                  Clipboard.setData(
+                      ClipboardData(text: state.passwordController.text));
+                  setState(() => broderColor = Colors.blue);
+                  Timer(const Duration(milliseconds: 300),
+                      () => setState(() => broderColor = Colors.transparent));
+                },
               ),
-              controller: state.passwordController,
-              readOnly: true,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500),
-              onTap: () {
-                Clipboard.setData(
-                    ClipboardData(text: state.passwordController.text));
-                setState(() => broderColor = Colors.blue);
-                Timer(const Duration(milliseconds: 300),
-                    () => setState(() => broderColor = Colors.transparent));
-              },
             ),
           ),
         );
@@ -55,4 +67,3 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
-

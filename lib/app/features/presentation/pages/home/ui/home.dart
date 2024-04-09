@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:password_gen/app/features/data/function/db_functions.dart';
+import 'package:password_gen/app/features/data/model/llist_model.dart';
 import 'package:password_gen/app/features/presentation/pages/home/bloc/home_bloc.dart';
 import 'package:password_gen/app/features/presentation/pages/save_list/ui/save_list.dart';
 import 'package:password_gen/app/features/widget/bottom_taxt.dart';
@@ -14,6 +16,9 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController textEditingController = TextEditingController();
+    GlobalKey<FormState> formkey = GlobalKey();
+    GlobalKey<FormState> formkey1 = GlobalKey();
     return Scaffold(
         body: Stack(
       children: [
@@ -120,7 +125,7 @@ class Home extends StatelessWidget {
 
                     const CustomSlider(),
                     const SizedBox(height: 20),
-                    const CustomTextField(),
+                    CustomTextField(keyg: formkey1),
                     const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
@@ -135,16 +140,85 @@ class Home extends StatelessWidget {
                                     .add(GeneratePasswordSubmittedEvent());
                               }),
                           const SizedBox(width: 10),
-                          CustomMiniBox(
-                              icon: Icons.save_alt_rounded,
-                              onChange: () {
-                               
-                              }),
-                              const SizedBox(width: 10),
+                          BlocBuilder<HomeBloc, HomeState>(
+                            builder: (context, state) {
+                              return CustomMiniBox(
+                                  icon: Icons.save_alt_rounded,
+                                  onChange: () {
+                                    if (formkey1.currentState!.validate()) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text('Give a title'),
+                                            content: SingleChildScrollView(
+                                                child: Form(
+                                              key: formkey,
+                                              child: TextFormField(
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "title is empty";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
+                                                controller:
+                                                    textEditingController,
+                                                decoration: InputDecoration(
+                                                    hintText: "title",
+                                                    border: OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8))),
+                                              ),
+                                            )),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Add'),
+                                                onPressed: () {
+                                                  if (formkey.currentState!
+                                                      .validate()) {
+                                                    PasswordList list = PasswordList(
+                                                        title:
+                                                            textEditingController
+                                                                .text,
+                                                        password: state
+                                                            .passwordController
+                                                            .text);
+                                                    addPassword(list);
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      content: const Text(
+                                                          "Password is saved"),
+                                                      backgroundColor:
+                                                          Colors.green[500],
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                              8),
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                    ));
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  });
+                            },
+                          ),
+                          const SizedBox(width: 10),
                           CustomMiniBox(
                               icon: Icons.view_list_rounded,
                               onChange: () {
-                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PasswordList(),));
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const PasswordListSc(),
+                                ));
                               }),
                         ],
                       ),

@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:password_gen/app/features/data/function/db_functions.dart';
+import 'package:password_gen/app/features/data/model/llist_model.dart';
+import 'package:lottie/lottie.dart';
 
-class PasswordList extends StatelessWidget {
-  const PasswordList({super.key});
+class PasswordListSc extends StatefulWidget {
+  const PasswordListSc({super.key});
 
+  @override
+  State<PasswordListSc> createState() => _PasswordListScState();
+}
+
+class _PasswordListScState extends State<PasswordListSc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,55 +37,88 @@ class PasswordList extends StatelessWidget {
                   ),
                   color: Colors.black.withOpacity(0.81),
                 ),
-                child: ListView.builder(
-                  itemBuilder: (context,index) {
-                    return Container(
-                      height: 70,
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "title",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
+                child: FutureBuilder(
+                    future: getAllPassword(),
+                    builder: (context, AsyncSnapshot snapshot) {
+                      List<PasswordList> passwordlist = snapshot.data;
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        if (passwordlist.isEmpty) {
+                          return  Center(
+                            child: LottieBuilder.asset("asset/Animation - 1712679165409.json",fit: BoxFit.fill,height: 200,),
+                          );
+                        } else {
+                          return ListView.builder(
+                            itemCount: passwordlist.length,
+                              itemBuilder: (context, index) {
+                            return Container(
+                              height: 70,
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                   SingleChildScrollView(
+                                     child: ConstrainedBox(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 230
+                                      ),
+                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            passwordlist[index].title,
+                                            style: const TextStyle(
+                                              
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1.5,
+                                            ),
+                                          ),
+                                          Text(
+                                            passwordlist[index].password,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 1.5,
+                                            ),
+                                          ),
+                                        ],
+                                                                         ),
+                                     ),
+                                   ),
+                                  IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          delete(passwordlist[index].id.toString());
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      )),
+                                ],
                               ),
-                              Text(
-                                "Password",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {}, icon: const Icon(Icons.edit,color: Colors.grey,)),
-                              IconButton(
-                                  onPressed: () {}, icon: const Icon(Icons.delete,color: Colors.red,)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                ),
+                            );
+                          });
+                        }
+                      }
+                    }),
               ),
             ),
-            IconButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, icon: const Icon(Icons.arrow_back,color: Colors.white,size: 30,)),
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                  size: 30,
+                )),
           ],
         ),
       ),
