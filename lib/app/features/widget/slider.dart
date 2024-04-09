@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:password_gen/app/core/slider.dart';
+import 'package:password_gen/app/core/constraints/slider.dart';
 import 'package:password_gen/app/features/presentation/pages/home/bloc/home_bloc.dart';
 
 class CustomSlider extends StatelessWidget {

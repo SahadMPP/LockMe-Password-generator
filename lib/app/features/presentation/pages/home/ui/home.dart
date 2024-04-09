@@ -1,11 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:password_gen/app/features/presentation/pages/home/bloc/home_bloc.dart';
+import 'package:password_gen/app/features/presentation/pages/save_list/ui/save_list.dart';
+import 'package:password_gen/app/features/widget/bottom_taxt.dart';
+import 'package:password_gen/app/features/widget/mini_box.dart';
 import 'package:password_gen/app/features/widget/setting_check_box.dart';
 import 'package:password_gen/app/features/widget/slider.dart';
+import 'package:password_gen/app/features/widget/text_file.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -127,14 +129,23 @@ class Home extends StatelessWidget {
                         children: [
                           CustomMiniBox(
                               icon: Icons.refresh_rounded,
-                              onChange: () {                           
+                              onChange: () {
                                 context
                                     .read<HomeBloc>()
                                     .add(GeneratePasswordSubmittedEvent());
                               }),
                           const SizedBox(width: 10),
                           CustomMiniBox(
-                              icon: Icons.save_alt_rounded, onChange: () {}),
+                              icon: Icons.save_alt_rounded,
+                              onChange: () {
+                               
+                              }),
+                              const SizedBox(width: 10),
+                          CustomMiniBox(
+                              icon: Icons.view_list_rounded,
+                              onChange: () {
+                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PasswordList(),));
+                              }),
                         ],
                       ),
                     ),
@@ -156,118 +167,5 @@ class Home extends StatelessWidget {
         ),
       ],
     ));
-  }
-}
-
-class CustomTextField extends StatefulWidget {
-  const CustomTextField({
-    super.key,
-  });
-
-  @override
-  State<CustomTextField> createState() => _CustomTextFieldState();
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
-  bool isCopy = false;
-  Color broderColor = Colors.transparent;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Container(
-          alignment: Alignment.center,
-          height: 50,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.grey[700],
-            border: Border.all(color: broderColor),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 500),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              controller: state.passwordController,
-              readOnly: true,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500),
-              onTap: () {
-                Clipboard.setData(
-                    ClipboardData(text: state.passwordController.text));
-                setState(() => broderColor = Colors.blue);
-                Timer(const Duration(milliseconds: 300),
-                    () => setState(() => broderColor = Colors.transparent));
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class CustomBottomText extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const CustomBottomText({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: Colors.grey,
-          size: 15,
-        ),
-        const SizedBox(width: 5),
-        Text(
-          text,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class CustomMiniBox extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onChange;
-  const CustomMiniBox({
-    super.key,
-    required this.icon,
-    required this.onChange,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 45,
-      width: 45,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[500]!, width: 1),
-        color: Colors.grey.withOpacity(.2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: IconButton(
-          onPressed: onChange,
-          icon: Icon(
-            icon,
-            size: 20,
-            color: Colors.white70,
-          )),
-    );
   }
 }
