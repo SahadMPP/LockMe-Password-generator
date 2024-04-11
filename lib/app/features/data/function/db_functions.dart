@@ -29,7 +29,9 @@ getAllPassword() async {
   return list;
 }
 
-Future<void> update() async {}
+Future<void> update(PasswordList value) async {
+  db.rawUpdate("UPDATE passwordlist SET title = ?, password = ? WHERE id = ?",[value.title,value.password,value.id]);
+}
 
 Future<void> delete(String id) async {
  await db.rawDelete('DELETE FROM passwordlist WHERE id = ?',[id]);
