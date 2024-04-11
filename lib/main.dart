@@ -5,7 +5,7 @@ import 'package:password_gen/app/features/data/local/password_genetator.dart';
 import 'package:password_gen/app/features/data/repository/password_repo_impl.dart';
 import 'package:password_gen/app/features/domine/use_case/password_use_case.dart';
 import 'package:password_gen/app/features/presentation/pages/home/bloc/home_bloc.dart';
-import 'package:password_gen/app/features/presentation/pages/home/ui/home.dart';
+import 'package:password_gen/app/features/presentation/splash_screen/ui/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: SplashScreen(),
       ),
     );
   }

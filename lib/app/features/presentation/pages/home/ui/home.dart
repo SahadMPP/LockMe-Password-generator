@@ -155,6 +155,9 @@ class Home extends StatelessWidget {
                                                 child: Form(
                                               key: formkey,
                                               child: TextFormField(
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
                                                 validator: (value) {
                                                   if (value == null ||
                                                       value.isEmpty) {

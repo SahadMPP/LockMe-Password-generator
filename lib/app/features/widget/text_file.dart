@@ -38,6 +38,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             child: Form(
               key: widget.keyg,
               child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                 ),
@@ -49,6 +50,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     return null;
                   }
                 },
+                focusNode: FocusNode(),
                 readOnly: true,
                 style: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.w500),
